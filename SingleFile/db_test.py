@@ -76,33 +76,6 @@ class User:
 
 
 
-def past_items():
-
-    db = mysql.connector.connect(
-        host="localhost",
-        user="root",
-        passwd="Cat5p0t~2525",
-        database="testdatabase"
-        )
-
-    mycursor = db.cursor()
-    print()
-    #mycursor.execute("CREATE DATABASE testdatabase")
-    #value = mycursor.execute("CREATE TABLE TEST1(ID INT, NOTE VARCHAR(MAX))")
-    #print(f"value: {value}")
-
-    #mycursor.execute("CREATE TABLE Test (name VARCHAR(50), age smallint UNSIGNED, persionID int PRIMARY KEY AUTO_INCREMENT)")
-
-    #mycursor.execute("DESCRIBE Test")
-    #for x in mycursor:
-    #    print(x)
-
-    mycursor.execute("INSERT INTO Test (name, age) VALUES (%s, %s)", ("tim", 19))
-    db.commit()
-    mycursor.execute("select * from test")
-
-    for x in mycursor:
-        print(x)
 
 
 def main():
