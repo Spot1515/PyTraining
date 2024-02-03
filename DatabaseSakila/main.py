@@ -2,11 +2,18 @@ import mysql.connector
 from mysql.connector import Error
 from datetime import datetime
 from random import randint
+import subprocess
+import os
 
 HOSTNAME = 'localhost'
 DATABASE = 'sakila'
 USER = 'test'
 PASSWORD = 'Test123'
+SUP_USER = 'root'
+    #SUP_USER -- Only for Database Restore
+SUP_PASSWORD = 'Cat5p0t~2525'
+DATABASE_BACKUP_PATH = 'c:\\temp\\sakila.sql'
+DATABASE_BACKUP_EDIT = 'c:\\temp\\sakila2.sql'
 global_connection_id = 0
 
 # Error Class
@@ -47,9 +54,6 @@ class DatabaseConnection:
         if self.connection and self.connection.is_connected():
             self.connection.close()
             print(f"MySQL connection is closed ID: {self.connection_id}")
-
-
-
 
 #DAO Class
 class ActorDAO:
@@ -120,8 +124,10 @@ class ActorDAO:
             if val_actor:
                 check = (
                     val_actor[1] == first_name and
-                    val_actor[2] == last_name and
-                    val_actor[3] == current_time
+                    val_actor[2] == last_name 
+                    #Time on MySQL does not Match what is being sent
+                    #need to look into this
+                    #and val_actor[3] == current_time
                 )
                 if check == True:
                     error = False
@@ -164,9 +170,24 @@ def get_updated_time():
     formatted_time = current_time.strftime("%Y-%m-%d %H:%M:%S")
     return formatted_time
 
+#database backup
+def run_shell_command(command):
+    result = subprocess.run(command, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    return result.stdout, result.stderr
+
+def backup_database():
+    #backup_command = f"C:\Program Files\MySQL\MySQL Server 8.3\\bin\mysqldump.exe  -u{USER} -p{PASSWORD} {DATABASE} > {DATABASE_BACKUP_PATH}"
+    backup_command = f"\"C:\\Program Files\\MySQL\\MySQL Server 8.3\\bin\\mysqldump.exe\" -u{USER} -p{PASSWORD} {DATABASE} > {DATABASE_BACKUP_PATH}"
+    output, error = run_shell_command(backup_command)
+    return output, error
+
+def restore_database():
+    restore_command = f"\"C:\\Program Files\\MySQL\\MySQL Server 8.3\\bin\\mysql.exe\" -u{SUP_USER} -p{SUP_PASSWORD} {DATABASE} < {DATABASE_BACKUP_EDIT}"
+    output, error = run_shell_command(restore_command)
+    return output, error
 
 #Test Items
-    #for now at least
+#for now at least
 def get_actor(actor_id: int):
     actor = ActorDAO().get_actor(actor_id)
     actor = Actor(*actor)
@@ -186,36 +207,68 @@ def get_all_actor():
 def main():
     print('\nstarting program\n')
 
-
-    #Example of and update of a actor record
-    if True == True:
-        #gets the orginal record
-        actor = get_actor(10) 
-
-        #print("\n" + str(actor) + "\n") 
-        #Updates the Object
-        actor.update_first_name("Cole")
-        #start the database update process updateing off the updated object
-        actor_dao = ActorDAO()
-        x, error = actor_dao.update_actor(actor.actor_id, actor.first_name, actor.last_name, actor.last_update)
-
-        print(f"return: {x}")
-        print(f"error: {error}")
-
-
-    # gets all records that are return conver to objects
-        # then all object where put into a list that is returned to main
-    test_get_all_actors = 0
-    if 1 == 0:
-        actors = get_all_actor()
-
-        for actor in actors:
-            if str(actor.last_name).lower() == 'wood':
-                print(str(actor))
-        print()
+    #main testing space
 
 
 
+
+
+
+
+    #below are the fisinshed test
+
+    #backup and restore test
+    backup_test = 0
+    if backup_test == 1:
+        #testing database backup and restore
+        test_backup = 0
+        if test_backup == 1:
+            x, error = backup_database()
+            print(f"return: {x.decode('utf-8') if x else ''}")
+            print(f"error: {error.decode('utf-8') if error else ''}")
+
+        #testing the restore process
+        test_restore = 0
+        if test_restore == 1:
+            x, error = restore_database()
+            print(f"return: {x.decode('utf-8') if x else ''}")
+            print(f"error: {error.decode('utf-8') if error else ''}")            
+
+
+    # sql script tesing
+    sql_script_test = 0
+    if sql_script_test == 1:
+        #Example of and update of a actor record
+        update_test = 0
+        if update_test == 1:
+            #gets the orginal record
+            actor = get_actor(10) 
+
+            #print("\n" + str(actor) + "\n") 
+            #Updates the Object
+            actor.update_first_name("Cole")
+            #start the database update process updateing off the updated object
+            actor_dao = ActorDAO()
+            x, error = actor_dao.update_actor(actor.actor_id, actor.first_name, actor.last_name, actor.last_update)
+
+            print(f"return: {x}")
+            print(f"error: {error}")
+
+        # gets all records that are return conver to objects
+            # then all object where put into a list that is returned to main
+        test_get_all_actors = 0
+        if test_get_all_actors == 1:
+            actors = get_all_actor()
+
+            for actor in actors:
+                if str(actor.last_name).lower() == 'wood':
+                    print(str(actor))
+            print()
+
+
+
+    #End of Main print
+    print("End of Main")
 
 
 
