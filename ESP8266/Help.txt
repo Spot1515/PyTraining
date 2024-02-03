@@ -1,0 +1,27 @@
+This folder has items that will be related to the develpent of my new ESP 8266 boards
+
+The final project will be items own get rep.
+but for now i will be working on random items that may be realted
+
+this is becuase i am still looking into the process and want testing 
+time before i settle 
+
+
+1. home system
+    a. This over all will be worked into a system for the new house i 
+        build am going to build.
+    b. its going to handle may items over time but will start with 
+        the ESP8266 sensor boxs. in the long term there will be more
+        then 1 version.
+        They could have any combo of the below items.
+        1. Tempeture/Humitity Moniters
+        2. Light Moniters
+        3. camara feeds
+        4. intigrated store buoght items(Fridge, Air Purifier)
+
+
+1. ESP8266 sesor boxes
+2. linex server
+    a. Database
+    b. Web s0erver
+
