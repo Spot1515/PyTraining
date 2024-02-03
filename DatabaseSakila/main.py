@@ -36,7 +36,6 @@ class DatabaseConnection:
         global_connection_id += 1
         self.connection_id = global_connection_id
         
-
     def __enter__(self):
         try:
             self.connection = mysql.connector.connect(
@@ -94,8 +93,7 @@ class ActorDAO:
             result = cursor.fetchall()
             cursor.close()
         return result
-
-    
+ 
     def update_actor(self, actor_id: int, first_name: str, last_name: str, last_update: datetime):
         #is setup to return error if it fails data write validateion
             #but this processs is not setup
@@ -147,23 +145,41 @@ class ActorDAO:
 #Object Class
 class Actor:
     def __init__(self, actor_id: int, first_name: str, last_name: str, last_update: datetime) -> None:
-        self.actor_id = actor_id
-        self.first_name = first_name
-        self.last_name = last_name
-        self.last_update = last_update
-
-    def update_first_name(self, first_name: str):
-        self.first_name = first_name
-
-    def update_last_name(self, last_name: str):
-        self.last_name = self.last_name
-
-    def return_actor(self):
-        return [self.actor_id, self.first_name, self.last_name, self.last_update]
+        self._actor_id = actor_id
+        self._first_name = first_name
+        self._last_name = last_name
+        self._last_update = last_update
     
     def __str__(self) -> str:
         return f"Actor(actor_id: {self.actor_id}, first_name: {self.first_name}, last_name: {self.last_name}, last_update: {self.last_update})"
+
+    def __list__(self) -> list:
+        return [self.actor_id, self.first_name, self.last_name, self.last_update]
     
+    @property
+    def actor_id(self):
+        return self._actor_id
+
+    @property
+    def first_name(self):
+        return self._first_name
+
+    @first_name.setter
+    def first_name(self, value: str):
+        self._first_name = value
+
+    @property
+    def last_name(self):
+        return self._last_name
+    
+    @last_name.setter
+    def last_name(self, value: str):
+        self._last_name = value
+
+    @property
+    def last_update(self):
+        return self._last_update
+
 #Reals Methods
 def get_updated_time():
     current_time = datetime.now()
@@ -234,19 +250,20 @@ def main():
             print(f"return: {x.decode('utf-8') if x else ''}")
             print(f"error: {error.decode('utf-8') if error else ''}")            
 
-
     # sql script tesing
     sql_script_test = 0
     if sql_script_test == 1:
         #Example of and update of a actor record
+        print("\nStarting sql_script_test\n")
         update_test = 0
         if update_test == 1:
+            print("\nStarting update_test\n")
             #gets the orginal record
             actor = get_actor(10) 
 
             #print("\n" + str(actor) + "\n") 
             #Updates the Object
-            actor.update_first_name("Cole")
+            actor.first_name = "Cole"
             #start the database update process updateing off the updated object
             actor_dao = ActorDAO()
             x, error = actor_dao.update_actor(actor.actor_id, actor.first_name, actor.last_name, actor.last_update)
@@ -258,6 +275,7 @@ def main():
             # then all object where put into a list that is returned to main
         test_get_all_actors = 0
         if test_get_all_actors == 1:
+            print("\nStarting test_get_all_actors\n")
             actors = get_all_actor()
 
             for actor in actors:
@@ -265,10 +283,8 @@ def main():
                     print(str(actor))
             print()
 
-
-
     #End of Main print
-    print("End of Main")
+    print("\nEnd of Main\n")
 
 
 
